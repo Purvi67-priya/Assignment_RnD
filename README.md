@@ -1,115 +1,486 @@
-# 📘 Parametric Curve Modeling and Optimization
+📘 Parametric Curve Modeling and Optimization
+🧮 Problem Overview
 
-## 🧮 Problem Statement
+We are given the following parametric equation of a curve:
 
-We are given the following **parametric equation** of a curve:
+𝑥
+(
+𝑡
+)
+	
+=
+𝑡
+cos
+⁡
+(
+𝜃
+)
+−
+𝑒
+𝑀
+∣
+𝑡
+∣
+sin
+⁡
+(
+0.3
+𝑡
+)
+sin
+⁡
+(
+𝜃
+)
++
+𝑋
 
-\[
-\begin{aligned}
-x(t) &= t\cos(\theta) - e^{M|t|}\sin(0.3t)\sin(\theta) + X \\
-y(t) &= 42 + t\sin(\theta) + e^{M|t|}\sin(0.3t)\cos(\theta)
-\end{aligned}
-\]
 
-The goal is to **find the unknown parameters** \( \theta, M, X \) that best fit a given set of data points \((x_i, y_i)\) for \(6 < t < 60\).
+𝑦
+(
+𝑡
+)
+	
+=
+42
++
+𝑡
+sin
+⁡
+(
+𝜃
+)
++
+𝑒
+𝑀
+∣
+𝑡
+∣
+sin
+⁡
+(
+0.3
+𝑡
+)
+cos
+⁡
+(
+𝜃
+)
+x(t)
+y(t)
+	​
 
----
+=tcos(θ)−e
+M∣t∣
+sin(0.3t)sin(θ)+X
+=42+tsin(θ)+e
+M∣t∣
+sin(0.3t)cos(θ)
+	​
 
-## ⚙️ Approach
 
-### 1. Data Loading
-The provided CSV file (`xy_data.csv`) contains \((x, y)\) coordinates sampled uniformly in the range \(6 \le t \le 60\).
+Our objective is to determine the parameters
 
-### 2. Model Construction
-The parametric model is implemented as:
+𝜃
+θ, 
+𝑀
+M, and 
+𝑋
+X that best fit a given set of data points 
+(
+𝑥
+𝑖
+,
+𝑦
+𝑖
+)
+(x
+i
+	​
 
-\[
-\begin{aligned}
-x_{pred}(t) &= t\cos(\theta) - e^{M|t|}\sin(0.3t)\sin(\theta) + X \\
-y_{pred}(t) &= 42 + t\sin(\theta) + e^{M|t|}\sin(0.3t)\cos(\theta)
-\end{aligned}
-\]
+,y
+i
+	​
 
-### 3. Objective Function
-We minimize the **mean Euclidean distance** between observed and predicted points:
+) for the interval 
+6
+<
+𝑡
+<
+60
+6<t<60.
 
-\[
-J(\theta, M, X) = \frac{1}{N}\sum_{i=1}^{N} \sqrt{(x_i - x_{pred,i})^2 + (y_i - y_{pred,i})^2}
-\]
+⚙️ Methodology
+1️⃣ Data Loading
 
-### 4. Optimization Details
-- **Algorithm:** L-BFGS-B (bounded optimization)
-- **Parameter bounds:**
-  | Parameter | Range |
-  |------------|--------|
-  | \(\theta\) | [0°, 50°] |
-  | \(M\) | [-0.05, 0.05] |
-  | \(X\) | [0, 100] |
-- **Initial Guess:** [25, 0, 50]
+The dataset (xy_data.csv) contains observed 
+(
+𝑥
+,
+𝑦
+)
+(x,y) coordinates corresponding to evenly spaced 
+𝑡
+t-values within 
+6
+≤
+𝑡
+≤
+60
+6≤t≤60.
 
----
+Each point represents a sample along the unknown curve.
 
-## 🧩 Best-Fit Parameters
+2️⃣ Model Formulation
 
-| Parameter | Value |
-|------------|--------|
-| \(\theta\) | **30.0441°** |
-| \(M\) | **−0.00528** |
-| \(X\) | **55.3473** |
+The mathematical model is expressed as:
 
----
+𝑥
+𝑝
+𝑟
+𝑒
+𝑑
+(
+𝑡
+)
+	
+=
+𝑡
+cos
+⁡
+(
+𝜃
+)
+−
+𝑒
+𝑀
+∣
+𝑡
+∣
+sin
+⁡
+(
+0.3
+𝑡
+)
+sin
+⁡
+(
+𝜃
+)
++
+𝑋
 
-## 🧠 Defining the Parameter tᵢ
 
-Since the dataset only contains \(x_i\) and \(y_i\) coordinates, the parameter values \(t_i\) were **not given**.  
-However, we know that the points lie on the curve for \(6 < t < 60\). Therefore, we **assumed uniform spacing** between these limits.
+𝑦
+𝑝
+𝑟
+𝑒
+𝑑
+(
+𝑡
+)
+	
+=
+42
++
+𝑡
+sin
+⁡
+(
+𝜃
+)
++
+𝑒
+𝑀
+∣
+𝑡
+∣
+sin
+⁡
+(
+0.3
+𝑡
+)
+cos
+⁡
+(
+𝜃
+)
+x
+pred
+	​
 
-### 🔹 Derivation of the Formula
+(t)
+y
+pred
+	​
 
-If we want to divide a range \([a, b]\) into \(N\) evenly spaced points, the step size is:
+(t)
+	​
 
-\[
-\Delta t = \frac{b - a}{N - 1}
-\]
+=tcos(θ)−e
+M∣t∣
+sin(0.3t)sin(θ)+X
+=42+tsin(θ)+e
+M∣t∣
+sin(0.3t)cos(θ)
+	​
 
-Hence each point is computed as:
 
-\[
-t_i = a + (i - 1)\Delta t
-\]
+These equations generate predicted coordinates 
+(
+𝑥
+𝑝
+𝑟
+𝑒
+𝑑
+,
+𝑦
+𝑝
+𝑟
+𝑒
+𝑑
+)
+(x
+pred
+	​
 
-Substituting \(a = 6\) and \(b = 60\):
+,y
+pred
+	​
 
-\[
-\boxed{t_i = 6 + \frac{(i - 1)(60 - 6)}{N - 1}}
-\]
+) for any given parameter set.
+
+3️⃣ Objective Function
+
+To evaluate the model’s accuracy, we minimize the mean Euclidean distance between observed and predicted points:
+
+𝐽
+(
+𝜃
+,
+𝑀
+,
+𝑋
+)
+=
+1
+𝑁
+∑
+𝑖
+=
+1
+𝑁
+(
+𝑥
+𝑖
+−
+𝑥
+𝑝
+𝑟
+𝑒
+𝑑
+,
+𝑖
+)
+2
++
+(
+𝑦
+𝑖
+−
+𝑦
+𝑝
+𝑟
+𝑒
+𝑑
+,
+𝑖
+)
+2
+J(θ,M,X)=
+N
+1
+	​
+
+i=1
+∑
+N
+	​
+
+(x
+i
+	​
+
+−x
+pred,i
+	​
+
+)
+2
++(y
+i
+	​
+
+−y
+pred,i
+	​
+
+)
+2
+	​
+
+
+This cost function ensures the optimized parameters yield the curve closest to the observed data.
+
+4️⃣ Optimization Setup
+Parameter	Range
+
+𝜃
+θ	[0°, 50°]
+
+𝑀
+M	[-0.05, 0.05]
+
+𝑋
+X	[0, 100]
+
+Algorithm: L-BFGS-B (for bounded optimization)
+
+Initial Guess: [25°, 0, 50]
+
+Library Used: scipy.optimize.minimize
+
+🧩 Estimated Best-Fit Parameters
+Parameter	Optimized Value
+
+𝜃
+θ	30.0441°
+
+𝑀
+M	−0.00528
+
+𝑋
+X	55.3473
+🧠 Defining Parameter 
+𝑡
+𝑖
+t
+i
+	​
+
+
+Since the data file includes only 
+(
+𝑥
+𝑖
+,
+𝑦
+𝑖
+)
+(x
+i
+	​
+
+,y
+i
+	​
+
+),
+the corresponding 
+𝑡
+𝑖
+t
+i
+	​
+
+ values are reconstructed using uniform spacing over 
+[
+6
+,
+60
+]
+[6,60].
+
+𝑡
+𝑖
+=
+6
++
+(
+𝑖
+−
+1
+)
+(
+60
+−
+6
+)
+𝑁
+−
+1
+t
+i
+	​
+
+=6+
+N−1
+(i−1)(60−6)
+	​
+
+	​
+
 
 This ensures:
-- \(t_1 = 6\)
-- \(t_N = 60\)
-- All other \(t_i\) values are equally spaced in between.
 
-In Python, this is achieved by:
-```python
+𝑡
+1
+=
+6
+t
+1
+	​
+
+=6
+
+𝑡
+𝑁
+=
+60
+t
+N
+	​
+
+=60
+
+All 
+𝑡
+𝑖
+t
+i
+	​
+
+ are equally spaced in between.
+
+In Python:
+
 t = np.linspace(6, 60, N)
-```
 
----
-
-## 🧮 Python Implementation
-
-```python
+💻 Python Implementation
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 
-# Load CSV
+# Load the dataset
 data = pd.read_csv("xy_data.csv")
 x_obs, y_obs = data.iloc[:, 0].values, data.iloc[:, 1].values
 t = np.linspace(6, 60, len(x_obs))
 
-# Parametric model
+# Define the parametric model
 def model(params, t):
     theta_deg, M, X = params
     theta = np.deg2rad(theta_deg)
@@ -118,57 +489,100 @@ def model(params, t):
     y_pred = 42 + t*np.sin(theta) + exp_term*np.sin(0.3*t)*np.cos(theta)
     return x_pred, y_pred
 
-# Objective function
+# Define the objective function
 def objective(params):
     x_pred, y_pred = model(params, t)
     return np.mean(np.sqrt((x_obs - x_pred)**2 + (y_obs - y_pred)**2))
 
-# Optimize
+# Run optimization
 bounds = [(0, 50), (-0.05, 0.05), (0, 100)]
 res = minimize(objective, [25, 0, 50], bounds=bounds, method='L-BFGS-B')
-theta, M, X = res.x
 
+theta, M, X = res.x
 print(f"Theta = {theta:.6f}°, M = {M:.6f}, X = {X:.6f}")
 
-# Plot
+# Plot the observed data vs fitted curve
 x_fit, y_fit = model(res.x, t)
-plt.scatter(x_obs, y_obs, s=10, alpha=0.6, label='Observed points')
-plt.plot(x_fit, y_fit, 'r', lw=2, label='Fitted curve')
-plt.xlabel('x'); plt.ylabel('y'); plt.legend(); plt.grid(True)
+plt.scatter(x_obs, y_obs, s=10, alpha=0.6, label='Observed Points')
+plt.plot(x_fit, y_fit, 'r', lw=2, label='Fitted Curve')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
+plt.grid(True)
 plt.title('Observed Data vs Fitted Parametric Curve')
 plt.show()
-```
 
----
+📈 Results & Visualization
 
-## 📈 Results and Visualization
+The resulting fitted curve (shown in red) closely follows the observed data points (in blue),
+indicating a highly accurate parameter estimation.
 
-The fitted curve (red) closely matches the dataset points (blue/orange), confirming the correctness of the model and the accuracy of parameter estimation.
+🔍 Step-by-Step Summary
 
----
+Problem Understanding: Estimate 
+𝜃
+,
+𝑀
+,
+𝑋
+θ,M,X from given 
+(
+𝑥
+,
+𝑦
+)
+(x,y) data.
 
-## 📘 Step-by-Step Summary of the Process
+Data Loading: Import points from xy_data.csv.
 
-1. **Understand the problem** — find parameters \(\theta, M, X\) for the curve using given data points.
-2. **Load the CSV** — read \(x_i, y_i\) values from the provided file.
-3. **Assign t-values** — use uniform spacing between 6 and 60:
-   \(t_i = 6 + (i - 1)(60 - 6)/(N - 1)\)
-4. **Build the model** — code the parametric equations.
-5. **Define the loss function** — mean Euclidean distance between observed and predicted points.
-6. **Optimize parameters** — use `scipy.optimize.minimize` (L-BFGS-B) with bounds.
-7. **Plot results** — visualize observed points vs fitted curve.
-8. **Generate final expressions** — suitable for Desmos and reports.
-9. **Document** — record approach, results, and explanation in this README.
+Parameter Mapping: Generate uniform 
+𝑡
+𝑖
+t
+i
+	​
 
----
+ values in [6, 60].
 
-#✅ Conclusion
+Model Definition: Encode the parametric equations.
 
--The optimized model provides an excellent fit to the observed dataset.
+Loss Function: Compute mean Euclidean distance.
 
--The exponential term e^(M|t|) introduces a slight damping effect, reducing amplitude for larger |t| values since M is negative.
+Optimization: Apply scipy.optimize.minimize with bounds.
 
--The optimized parameters — θ = 30.04°, M = -0.00528, and X = 55.35 — accurately represent the best-fit curve.
+Visualization: Plot fitted vs. observed data.
 
--This workflow demonstrates a complete process for parametric curve fitting, optimization, and model validation using Python.
----
+Result Interpretation: Analyze optimized parameters.
+
+Documentation: Prepare clear README for reproducibility.
+
+✅ Conclusion
+
+The optimized curve accurately represents the data distribution.
+
+The small negative 
+𝑀
+M value introduces a damping effect, slightly reducing amplitude for larger 
+∣
+𝑡
+∣
+∣t∣.
+
+Final parameters:
+
+𝜃
+=
+30.04
+°
+θ=30.04°, 
+𝑀
+=
+−
+0.00528
+M=−0.00528, 
+𝑋
+=
+55.35
+X=55.35
+
+Demonstrates a complete parametric curve-fitting workflow using Python and SciPy — from data preprocessing to optimization and visualization
